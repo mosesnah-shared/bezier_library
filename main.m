@@ -29,8 +29,8 @@ for i = 1 : Ntraj
     y_arr( (i-1)*Ns+1: i*Ns ) = C( 2, : );
 end
 
-
 % Find the best-fit curve
+% For discrete movement
 fx = fit( t_arr', x_arr', 'poly9' );
 fy = fit( t_arr', y_arr', 'poly9' );
 
@@ -52,7 +52,7 @@ data.p_data   =   p_data;
 data.dp_data  =  dp_data;
 data.ddp_data = ddp_data;
 
-save( 'A.mat', 'data' );
+save( 'O_distorted.mat', 'data' );
 
 %%
 % Find the best-fit curve
