@@ -33,40 +33,38 @@ end
 x_arr = x_arr - x_arr( 1 );
 y_arr = y_arr - y_arr( 1 );
 
-% Fitting the function, which was manually discovered
-myfittype = fittype("( 6*(t/a)^5-15*(t/a)^4+10*(t/a)^3 ) *( b10*(t-a)^10 + b9*(t-a)^9 + b8*(t-a)^8 + b7*(t-a)^7 + b6 * (t-a)^6 + b5 * (t-a)^5 + b4 * (t-a)^4 + b3*(t-a)^3 + c )", ...
-                'independent',"t", 'coefficients', [ "b3" "b4" "b5" "b6" "b7" "b8" "b9" "b10"  ], 'problem' ,["a", "c"] );
-
-% Specify the value for a_fix, c_fix
-a_fix = max( t_arr );
-c_fix = x_arr( end );
-
-% Perform the fit, passing the fixed 'b' as a 'problem' parameter
-f = figure( ); a = axes( 'parent', f );
-[fitresult_x, ~] = fit( t_arr', x_arr', myfittype, 'problem', { a_fix, c_fix } );
-plot( a, t_arr, fitresult_x( t_arr ), t_arr, x_arr )
+myfittype = fittype("( 6*(t/a)^5-15*(t/a)^4+10*(t/a)^3 ) *( b6 * (t-a)^6 + b5 * (t-a)^5 + b4 * (t-a)^4 + b6 * (t-a)^6 + )", ...
+                'independent',"t", 'coefficients', ["b0" "b1" "b2" "b3" "b4" "b5" "b6" "b7" "b8" "b9" "b10"  ], 'problem' ,["a"] );
 
 % Specify the value for 'b'
 a_fix = max( t_arr );
-c_fix = y_arr( end );
 
 % Perform the fit, passing the fixed 'b' as a 'problem' parameter
 f = figure( ); a = axes( 'parent', f );
-[fitresult_y, ~] = fit( t_arr', y_arr', myfittype, 'problem', { a_fix, c_fix } );
+[fitresult_x, gof] = fit( t_arr', x_arr', myfittype, 'problem', {a_fix} );
+plot( a, t_arr, fitresult_x( t_arr ), t_arr, x_arr )
+
+
+% Specify the value for 'b'
+a_fix = max( t_arr );
+
+% Perform the fit, passing the fixed 'b' as a 'problem' parameter
+f = figure( ); a = axes( 'parent', f );
+[fitresult_y, gof] = fit( t_arr', y_arr', myfittype, 'problem', {a_fix} );
 plot( a, t_arr, fitresult_y( t_arr ), t_arr, y_arr )
 
 % Double-check with the plot
-f = figure( ); a = axes( 'parent', f );
 plot( a, fitresult_x( t_arr ), fitresult_y( t_arr ), 'linewidth', 1, 'color', 'k' );
-hold on
-plot( a, x_arr, y_arr, 'linewidth', 1, 'color', 'c' );
+
+fx = fitresult_x( t_arr );
+fy = fitresult_y( t_arr );
 
 % Saving also the derivatives
 [ dfx, ddfx ] = differentiate( fitresult_x, t_arr );
 [ dfy, ddfy ] = differentiate( fitresult_y, t_arr );
 
 % Saving the data for DMP MATLAB
-  p_data = [   fitresult_x( t_arr ),   fitresult_y( t_arr )]';
+  p_data = [   fitresult_x( t_arr )',   fitresult_y( t_arr )']';
  dp_data = [           dfx,         dfy   ]';
 ddp_data = [          ddfx,        ddfy   ]';
 
@@ -76,7 +74,7 @@ data.p_data   =   p_data;
 data.dp_data  =  dp_data;
 data.ddp_data = ddp_data;
 
-save( 'C.mat', 'data' );
+save( 'A.mat', 'data' );
 
 %%
 % Find the best-fit curve
