@@ -29,6 +29,7 @@ for i = 1 : Ntraj
     y_arr( (i-1)*Ns+1: i*Ns ) = C( 2, : );
 end
 
+
 % Once we get the whole x_arr and y_arr, we set this as origin 0 
 x_arr = x_arr - x_arr( 1 );
 y_arr = y_arr - y_arr( 1 );
@@ -55,6 +56,7 @@ f = figure( ); a = axes( 'parent', f );
 [fitresult_y, ~] = fit( t_arr', y_arr', myfittype, 'problem', { a_fix, c_fix } );
 plot( a, t_arr, fitresult_y( t_arr ), t_arr, y_arr )
 
+
 % Double-check with the plot
 f = figure( ); a = axes( 'parent', f );
 plot( a, fitresult_x( t_arr ), fitresult_y( t_arr ), 'linewidth', 1, 'color', 'k' );
@@ -75,6 +77,7 @@ data.t_arr    =    t_arr;
 data.p_data   =   p_data;
 data.dp_data  =  dp_data;
 data.ddp_data = ddp_data;
+
 
 save( 'C.mat', 'data' );
 
